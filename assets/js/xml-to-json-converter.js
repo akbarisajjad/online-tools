@@ -184,3 +184,311 @@ class XmlToJsonConverter {
     xmlToJson(xml, options = {}) {
         const result = {};
         
+        if (xml.nodeType === Node.DOCUMENT_NODE) {
+            result[xml.documentElement.nodeName] = this.processNode(xml.documentElement, options);
+            return result;
+        }
+        
+        if (xml.nodeType === Node.ELEMENT_NODE) {
+            return this.processNode(xml, options);
+        }
+        
+        throw new Error("Unsupported XML node type");
+    }
+    
+    processNode(node, options) {
+        const obj = {};
+        
+        // Process attributes
+        if (options.preserveAttributes && node.attributes && node.attributes.length > 0) {
+            obj["@attributes"] = {};
+            for (let i = 0; i < node.attributes.length; i++) {
+                const attr = node.attributes[i];
+                obj["@attributes"][attr.nodeName] = attr.nodeValue;
+            }
+        }
+        
+        // Process child nodes
+        const childNodes = node.childNodes;
+        let hasElements = false;
+        
+        for (let i = 0; i < childNodes.length; i++) {
+            const child = childNodes[i];
+            
+            if (child.nodeType === Node.ELEMENT_NODE) {
+                hasElements = true;
+                const childName = child.nodeName;
+                const childValue = this.processNode(child, options);
+                
+                if (obj[childName]) {
+                    if (!Array.isArray(obj[childName])) {
+                        obj[childName] = [obj[childName]];
+                    }
+                    obj[childName].push(childValue);
+                } else {
+                    if (options.forceArray) {
+                        obj[childName] = [childValue];
+                    } else {
+                        obj[childName] = childValue;
+                    }
+                }
+            } else if (child.nodeType === Node.TEXT_NODE && child.nodeValue.trim() !== '') {
+                if (!hasElements) {
+                    return child.nodeValue.trim();
+                }
+                obj["#text"] = child.nodeValue.trim();
+            }
+        }
+        
+        // Handle empty objects
+        if (!hasElements && Object.keys(obj).length === 0) {
+            return "";
+        }
+        
+        return obj;
+    }
+    
+    displayJsonResult(jsonStr) {
+        // Syntax highlighting for JSON
+        this.jsonOutput.innerHTML = this.syntaxHighlight(jsonStr);
+        this.conversionStats.classList.remove('hidden');
+    }
+    
+    syntaxHighlight(json) {
+        if (typeof json !== 'string') {
+            json = JSON.stringify(json, null, 4);
+        }
+        
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        
+        return json.replace(
+            /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+            function (match) {
+                let cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return `<span class="${cls}">${match}</span>`;
+            }
+        );
+    }
+    
+    showConversionStats(startTime, xmlString, jsonStr) {
+        const endTime = performance.now();
+        const conversionTime = (endTime - startTime).toFixed(2);
+        
+        // Count XML elements
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+        const elementsCount = xmlDoc.getElementsByTagName('*').length;
+        
+        // Update stats
+        this.xmlSizeEl.textContent = this.formatFileSize(xmlString.length);
+        this.jsonSizeEl.textContent = this.formatFileSize(jsonStr.length);
+        this.conversionTimeEl.textContent = `${conversionTime} ms`;
+        this.elementsCountEl.textContent = elementsCount;
+    }
+    
+    formatFileSize(bytes) {
+        if (bytes < 1024) return `${bytes} bytes`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    }
+    
+    handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        if (file.size > 5 * 1024 * 1024) { // 5MB max
+            this.showError('File is too large (max 5MB)');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.currentFileContent = e.target.result;
+            this.fileUploadLabel.innerHTML = `
+                <i class="fas fa-file-code"></i>
+                <span>${file.name}</span>
+                <small>${(file.size / 1024).toFixed(1)} KB</small>
+            `;
+        };
+        reader.onerror = () => {
+            this.showError('Error reading file');
+        };
+        reader.readAsText(file);
+    }
+    
+    fetchXmlFromUrl() {
+        const url = this.xmlUrl.value.trim();
+        if (!url) {
+            this.showError('Please enter a URL');
+            return;
+        }
+        
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            this.showError('Invalid URL format');
+            return;
+        }
+        
+        this.fetchBtn.disabled = true;
+        this.fetchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.text();
+            })
+            .then(text => {
+                this.currentUrlContent = text;
+                this.showMessage('XML fetched successfully', 'success');
+                this.fetchBtn.disabled = false;
+                this.fetchBtn.textContent = 'Fetch';
+            })
+            .catch(error => {
+                this.showError(`Failed to fetch: ${error.message}`);
+                this.fetchBtn.disabled = false;
+                this.fetchBtn.textContent = 'Fetch';
+            });
+    }
+    
+    clearAll() {
+        this.xmlInput.value = '';
+        this.xmlFile.value = '';
+        this.xmlUrl.value = '';
+        this.currentFileContent = null;
+        this.currentUrlContent = null;
+        this.currentJsonOutput = null;
+        this.fileUploadLabel.innerHTML = `
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Choose an XML file or drag it here</span>
+        `;
+        this.jsonOutput.textContent = 'JSON output will appear here...';
+        this.conversionStats.classList.add('hidden');
+        this.hideError();
+        localStorage.removeItem('lastConvertedXml');
+    }
+    
+    copyJson() {
+        if (!this.currentJsonOutput) {
+            this.showError('No JSON to copy');
+            return;
+        }
+        
+        navigator.clipboard.writeText(this.currentJsonOutput)
+            .then(() => {
+                const originalText = this.copyBtn.innerHTML;
+                this.copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    this.copyBtn.innerHTML = originalText;
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+                this.showError('Failed to copy JSON');
+            });
+    }
+    
+    downloadJson() {
+        if (!this.currentJsonOutput) {
+            this.showError('No JSON to download');
+            return;
+        }
+        
+        const blob = new Blob([this.currentJsonOutput], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'converted.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    
+    saveToProfile() {
+        if (!this.auth || !this.auth.checkAuth()) {
+            this.showError('Please login to save JSON');
+            return;
+        }
+        
+        if (!this.currentJsonOutput) {
+            this.showError('No JSON to save');
+            return;
+        }
+        
+        this.saveBtn.disabled = true;
+        this.saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        
+        fetch('/api/save-json.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                json_data: this.currentJsonOutput,
+                title: 'Converted from XML'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.showMessage('JSON saved to your profile', 'success');
+            } else {
+                this.showError(data.message || 'Failed to save JSON');
+            }
+            this.saveBtn.disabled = false;
+            this.saveBtn.textContent = 'Save to Profile';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            this.showError('Failed to save JSON');
+            this.saveBtn.disabled = false;
+            this.saveBtn.textContent = 'Save to Profile';
+        });
+    }
+    
+    loadLastXml() {
+        const lastXml = localStorage.getItem('lastConvertedXml');
+        if (lastXml) {
+            this.xmlInput.value = lastXml;
+        }
+    }
+    
+    showError(message) {
+        this.errorMessage.classList.remove('hidden');
+        document.getElementById('error-text').textContent = message;
+    }
+    
+    hideError() {
+        this.errorMessage.classList.add('hidden');
+    }
+    
+    showMessage(message, type) {
+        const messageEl = document.createElement('div');
+        messageEl.className = `alert-message ${type}`;
+        messageEl.innerHTML = `
+            <i class="fas fa-${type === 'error' ? 'times-circle' : 'check-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(messageEl);
+        
+        setTimeout(() => {
+            messageEl.classList.add('fade-out');
+            setTimeout(() => messageEl.remove(), 500);
+        }, 3000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new XmlToJsonConverter();
+});
