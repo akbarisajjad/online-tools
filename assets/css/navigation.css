@@ -1,0 +1,445 @@
+/* استایل‌های هدر و ناوبری */
+.site-header {
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 1rem 0;
+}
+
+.dark .site-header {
+    background-color: var(--dark-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+/* ناوبری اصلی */
+.nav-list {
+    display: flex;
+    list-style: none;
+}
+
+.nav-list > li {
+    position: relative;
+    margin: 0 0.5rem;
+}
+
+.nav-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--dark-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.dark .nav-link {
+    color: white;
+}
+
+.nav-list > li.active .nav-link,
+.nav-link:hover {
+    color: var(--primary-color);
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+/* منوی آبشاری */
+.has-dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    min-width: 250px;
+    padding: 0.5rem 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.dark .dropdown-menu {
+    background-color: var(--dark-color);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.has-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu li a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.dark .dropdown-menu li a {
+    color: white;
+}
+
+.dropdown-menu li a:hover {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+}
+
+.dropdown-menu li a i {
+    margin-left: 0.75rem;
+    width: 20px;
+    text-align: center;
+}
+
+.dropdown-header {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.dark .dropdown-header {
+    color: #aaa;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #eee;
+    margin: 0.5rem 0;
+}
+
+.dark .dropdown-divider {
+    background-color: #444;
+}
+
+.dropdown-icon {
+    margin-right: 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* بخش جستجو */
+.search-box {
+    position: relative;
+    margin: 0 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 0.5rem 1rem;
+    padding-left: 2.5rem;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    width: 200px;
+    transition: all 0.3s ease;
+}
+
+.dark .search-input {
+    background-color: #2d2d2d;
+    border-color: #444;
+    color: white;
+}
+
+.search-input:focus {
+    width: 250px;
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.search-btn {
+    position: absolute;
+    left: 1rem;
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+.dark .search-btn {
+    color: #aaa;
+}
+
+/* بخش کاربر */
+.user-dropdown {
+    position: relative;
+}
+
+.user-btn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.user-btn:hover {
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 0.5rem;
+}
+
+.username {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.user-dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+/* دکمه‌های احراز هویت */
+.auth-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-outline {
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    background: none;
+}
+
+.btn-outline:hover {
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: 1px solid var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* منوی موبایل */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.menu-line {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--dark-color);
+    margin: 5px 0;
+    transition: all 0.3s ease;
+}
+
+.dark .menu-line {
+    background-color: white;
+}
+
+.mobile-menu {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    z-index: 999;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    padding: 1rem;
+}
+
+.dark .mobile-menu {
+    background-color: var(--dark-color);
+}
+
+.mobile-menu.active {
+    transform: translateX(0);
+}
+
+.mobile-nav-list {
+    list-style: none;
+    margin-top: 1rem;
+}
+
+.mobile-nav-list li a {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    color: var(--dark-color);
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+}
+
+.dark .mobile-nav-list li a {
+    color: white;
+}
+
+.mobile-nav-list li a i {
+    margin-left: 1rem;
+    width: 24px;
+    text-align: center;
+}
+
+.mobile-nav-list li a:hover,
+.mobile-nav-list li.active a {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+}
+
+.mobile-dropdown-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem;
+    background: none;
+    border: none;
+    color: var(--dark-color);
+    cursor: pointer;
+}
+
+.dark .mobile-dropdown-btn {
+    color: white;
+}
+
+.mobile-dropdown-btn i {
+    transition: transform 0.3s ease;
+}
+
+.mobile-dropdown-btn.active i {
+    transform: rotate(180deg);
+}
+
+.mobile-dropdown-menu {
+    list-style: none;
+    padding-right: 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.mobile-dropdown-menu.active {
+    max-height: 500px;
+}
+
+.mobile-dropdown-menu li a {
+    padding: 0.75rem 1rem;
+    padding-right: 2rem;
+}
+
+.mobile-search {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.mobile-search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-left: 3rem;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+}
+
+.dark .mobile-search-input {
+    background-color: #2d2d2d;
+    border-color: #444;
+    color: white;
+}
+
+.mobile-search-btn {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+}
+
+.dark .mobile-search-btn {
+    color: #aaa;
+}
+
+/* رسپانسیو */
+@media (max-width: 992px) {
+    .nav-list,
+    .header-actions > .search-box,
+    .header-actions > .auth-buttons {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo-text {
+        display: none;
+    }
+    
+    .container {
+        padding: 0 1rem;
+    }
+}
