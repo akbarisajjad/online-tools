@@ -1,0 +1,37 @@
+<?php 
+$title = "JSON Formatter";
+include '../../includes/header.php'; 
+?>
+
+<div class="tool-container">
+    <div class="tool-header">
+        <h1>فرمت‌دهنده JSON</h1>
+        <p>JSON خود را وارد کنید تا به صورت مرتب شده و خوانا نمایش داده شود</p>
+    </div>
+    
+    <div class="tool-wrapper">
+        <div class="input-section">
+            <textarea id="json-input" placeholder='{"name": "John", "age": 30, "city": "New York"}'></textarea>
+            <div class="action-buttons">
+                <button id="format-btn" class="btn-primary">فرمت‌دهی</button>
+                <button id="minify-btn" class="btn-secondary">فشرده‌سازی</button>
+                <button id="clear-btn" class="btn-outline">پاک‌کردن</button>
+                <button id="copy-btn" class="btn-outline">کپی</button>
+            </div>
+        </div>
+        
+        <div class="output-section">
+            <div class="output-header">
+                <h3>نتیجه:</h3>
+                <div class="output-actions">
+                    <button id="download-btn" class="btn-outline">دانلود</button>
+                </div>
+            </div>
+            <pre id="json-output"><code>نتیجه اینجا نمایش داده می‌شود...</code></pre>
+        </div>
+    </div>
+</div>
+
+<script src="../../assets/js/json-formatter.js"></script>
+
+<?php include '../../includes/footer.php'; ?>
