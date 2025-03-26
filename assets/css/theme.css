@@ -1,0 +1,17 @@
+/* تم تاریک */
+.dark {
+    --light-color: #1a1a1a;
+    --dark-color: #f8f9fa;
+    --primary-color: #4895ef;
+    --secondary-color: #4361ee;
+    --accent-color: #3f37c9;
+}
+
+/* آیکون‌ها */
+.icon-moon::before {
+    content: "🌙";
+}
+
+.icon-sun::before {
+    content: "☀️";
+}
