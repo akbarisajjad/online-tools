@@ -1,0 +1,83 @@
+/* استایل‌های عمومی ابزارها */
+.tool-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.tool-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.tool-header h1 {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.tool-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.input-section, .output-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dark .input-section,
+.dark .output-section {
+    background: var(--dark-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1rem;
+    font-family: monospace;
+    resize: none;
+    margin-bottom: 1rem;
+}
+
+pre {
+    background: #f5f5f5;
+    padding: 1rem;
+    border-radius: 4px;
+    height: 100%;
+    overflow: auto;
+    white-space: pre-wrap;
+}
+
+.dark pre {
+    background: #2d2d2d;
+}
+
+/* سینتکس هایلایت */
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
+.error { color: #f72585; }
+
+/* دکمه‌ها */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    /* بقیه استایل‌ها... */
+}
